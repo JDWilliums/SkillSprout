@@ -1,36 +1,61 @@
 import React from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import DashboardGoals from '../components/DashboardGoals';
+import RecentProgress from '../components/RecentProgress';
+import WeakAreas from '../components/WeakAreas';
 
 export default function Dashboard() {
-  const { logout } = useAuth(); // Access logout function
-  const navigate = useNavigate(); // Navigate to login after logout
-
-  const handleLogout = async () => {
-    try {
-      await logout(); // Clear the user session
-      navigate('/login'); // Redirect to login page
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
+  const userHasStats = true; // Replace with actual logic from user data
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
+    <div className="flex flex-col min-h-screen bg-gray-100 w-screen">
+      {/* Sticky Header */}
       <Header />
 
       {/* Main Content */}
-      <main>
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-gray-800">Welcome to the Dashboard</h2>
-          <p className="mt-4 text-gray-600">
-            Use the navigation above to explore the application.
-          </p>
+      <div
+        className="max-h-screen flex justify-center flex-1 px-4 sm:px-6 lg:px-8"
+        style={{
+          paddingTop: '4rem', // Ensure content starts below the sticky header
+        }}
+      >
+        <div className="w-9/12 bg-white p-6 rounded shadow">
+          <h1 className="text-3xl font-bold mb-6 text-center">Welcome to Your Dashboard</h1>
+
+          <div
+            className="
+              grid gap-6 
+              grid-cols-1       // Default: Single column on very small screens
+              sm:grid-cols-2    // Two columns on small screens (≥640px)
+              lg:grid-cols-3    // Three columns on large screens (≥1024px)
+              flex-1 w-full"
+          >
+            {/* Today's Goals */}
+            <div>
+              <DashboardGoals />
+            </div>
+
+            {/* Recent Progress */}
+            <div>
+              {userHasStats ? (
+                <RecentProgress />
+              ) : (
+                <div className="bg-gray-50 p-6 rounded shadow">
+                  <p className="text-gray-600">You haven't completed any tasks yet.</p>
+                  <button className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500">
+                    Take Your First Lesson
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Weak Areas */}
+            <div>
+              <WeakAreas />
+            </div>
+          </div>
         </div>
-      </main>
+      </div>
     </div>
-  
   );
 }
